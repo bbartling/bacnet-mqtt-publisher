@@ -1,0 +1,71 @@
+09/15/2021 08:13:17 AM - INFO: Starting BAC0 version 21.02.25 (Lite)
+09/15/2021 08:13:17 AM - INFO: Use BAC0.log_level to adjust verbosity of the app.
+09/15/2021 08:13:17 AM - INFO: Ex. BAC0.log_level('silence') or BAC0.log_level('error')
+09/15/2021 08:13:17 AM - DEBUG: Configurating app
+09/15/2021 08:13:17 AM - INFO: Starting TaskManager
+09/15/2021 08:13:17 AM - DEBUG: Task Manager waiting for tasks...
+09/15/2021 08:13:17 AM - DEBUG: Task Manager Initiated
+09/15/2021 08:13:17 AM - INFO: Using ip : 192.168.0.103
+09/15/2021 08:13:17 AM - DEBUG: Configurating app
+09/15/2021 08:13:17 AM - DEBUG: To be able to run the web server, you must install pandas, bokeh, flask and flask_bootstrap
+09/15/2021 08:13:17 AM - DEBUG: Those are not all installed so BAC0 will work in Lite mode only.
+09/15/2021 08:13:17 AM - DEBUG: Create Local Device
+09/15/2021 08:13:17 AM - DEBUG:   - request: <bacpypes.apdu.IAmRequest(0) instance at 0x1c5cb9024f0>
+09/15/2021 08:13:17 AM - DEBUG: Starting
+09/15/2021 08:13:17 AM - INFO: Starting app...
+09/15/2021 08:13:17 AM - INFO: BAC0 started
+09/15/2021 08:13:17 AM - INFO: Registered as Simple BACnet/IP App
+09/15/2021 08:13:17 AM - DEBUG: Running
+09/15/2021 08:13:17 AM - DEBUG: finally
+09/15/2021 08:13:17 AM - DEBUG: do_iam
+09/15/2021 08:13:17 AM - DEBUG:   - request: <bacpypes.apdu.IAmRequest(0) instance at 0x1c5cb8ffc70>
+09/15/2021 08:13:17 AM - INFO: Update Local COV Task started
+09/15/2021 08:13:17 AM - INFO: old bacpypes log removed
+09/15/2021 08:13:17 AM - INFO: old db removed
+09/15/2021 08:13:18 AM - DEBUG: do_whois 'any'
+09/15/2021 08:13:18 AM - DEBUG:   - request: <bacpypes.apdu.WhoIsRequest(8) instance at 0x1c5cb8f33d0>
+09/15/2021 08:13:18 AM - DEBUG: do_IAmRequest <bacpypes.apdu.IAmRequest(0) instance at 0x1c5cb9257f0>
+09/15/2021 08:13:18 AM - DEBUG: do_IAmRequest <bacpypes.apdu.IAmRequest(0) instance at 0x1c5cb925fa0>
+09/15/2021 08:13:19 AM - DEBUG: do_IAmRequest <bacpypes.apdu.IAmRequest(0) instance at 0x1c5cb925820>
+09/15/2021 08:13:21 AM - INFO: {3057061: '192.168.0.100', 0: '192.168.0.190', 201201: '12345:2'}
+09/15/2021 08:13:21 AM - INFO: 3 devices discovered on network
+09/15/2021 08:13:21 AM - DEBUG: Disconnecting
+09/15/2021 08:13:21 AM - DEBUG: Stopping All running tasks
+09/15/2021 08:13:21 AM - INFO: Stopping all tasks
+09/15/2021 08:13:21 AM - INFO: Stopping TaskManager
+09/15/2021 08:13:21 AM - INFO: Ok all tasks stopped
+09/15/2021 08:13:21 AM - DEBUG: Cleaning tasks list
+09/15/2021 08:13:21 AM - DEBUG: Stopping BACnet stack
+09/15/2021 08:13:21 AM - INFO: BACnet stopped
+09/15/2021 08:13:21 AM - INFO: BAC0 disconnected
+09/15/2021 08:13:27 AM - INFO: PRAGMA main.table_info("bacnet_whois")
+09/15/2021 08:13:27 AM - INFO: [raw sql] ()
+09/15/2021 08:13:27 AM - INFO: PRAGMA temp.table_info("bacnet_whois")
+09/15/2021 08:13:27 AM - INFO: [raw sql] ()
+09/15/2021 08:13:27 AM - INFO: 
+CREATE TABLE bacnet_whois (
+	"index" BIGINT, 
+	address TEXT, 
+	"bacnetId" BIGINT
+)
+
+
+09/15/2021 08:13:27 AM - INFO: [no key 0.00492s] ()
+09/15/2021 08:13:27 AM - INFO: COMMIT
+09/15/2021 08:13:27 AM - INFO: CREATE INDEX ix_bacnet_whois_index ON bacnet_whois ("index")
+09/15/2021 08:13:27 AM - INFO: [no key 0.00347s] ()
+09/15/2021 08:13:27 AM - INFO: COMMIT
+09/15/2021 08:13:27 AM - INFO: BEGIN (implicit)
+09/15/2021 08:13:27 AM - INFO: INSERT INTO bacnet_whois ("index", address, "bacnetId") VALUES (?, ?, ?)
+09/15/2021 08:13:27 AM - INFO: [generated in 0.00314s] ((0, '192.168.0.100', 3057061), (1, '192.168.0.190', 0), (2, '12345:2', 201201))
+09/15/2021 08:13:27 AM - INFO: COMMIT
+09/15/2021 08:13:27 AM - INFO: {3057061: '192.168.0.100:47808', 0: '192.168.0.190:47808', 201201: '12345:2'}
+09/15/2021 08:13:27 AM - INFO: Lets GO!, Wed Sep 15 08:13:27 2021
+09/15/2021 08:13:27 AM - INFO: GOING TO TRY: 3057061 192.168.0.100:47808
+09/15/2021 08:13:29 AM - INFO: OS ran 3057061 192.168.0.100:47808
+09/15/2021 08:13:30 AM - INFO: GOING TO TRY: 0 192.168.0.190:47808
+09/15/2021 08:13:32 AM - INFO: OS ran 0 192.168.0.190:47808
+09/15/2021 08:13:33 AM - INFO: GOING TO TRY: 201201 12345:2
+09/15/2021 08:13:37 AM - INFO: OS ran 201201 12345:2
+09/15/2021 08:13:38 AM - INFO: Done deal..., Wed Sep 15 08:13:38 2021
+09/15/2021 08:13:38 AM - INFO: 0h 0m 11s

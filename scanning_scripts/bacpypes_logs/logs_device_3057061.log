@@ -1,0 +1,31 @@
+09/15/2021 08:13:28 AM - DEBUG: running
+09/15/2021 08:13:28 AM - DEBUG: 0808.929453 192.168.0.100 idle
+09/15/2021 08:13:28 AM - DEBUG: 0808.929453 192.168.0.100 active
+09/15/2021 08:13:28 AM - DEBUG: 0808.940442 192.168.0.100 idle
+09/15/2021 08:13:28 AM - DEBUG: 0808.941442 192.168.0.100 idle
+09/15/2021 08:13:28 AM - DEBUG: 0808.941442 192.168.0.100 active
+09/15/2021 08:13:28 AM - DEBUG: 0808.950441 192.168.0.100 idle
+09/15/2021 08:13:28 AM - INFO: PRAGMA main.table_info("all_data")
+09/15/2021 08:13:28 AM - INFO: [raw sql] ()
+09/15/2021 08:13:28 AM - INFO: PRAGMA temp.table_info("all_data")
+09/15/2021 08:13:28 AM - INFO: [raw sql] ()
+09/15/2021 08:13:28 AM - INFO: 
+CREATE TABLE all_data (
+	"index" BIGINT, 
+	object_names TEXT, 
+	object_type TEXT, 
+	object_id BIGINT, 
+	device_id BIGINT
+)
+
+
+09/15/2021 08:13:28 AM - INFO: [no key 0.00029s] ()
+09/15/2021 08:13:29 AM - INFO: COMMIT
+09/15/2021 08:13:29 AM - INFO: CREATE INDEX ix_all_data_index ON all_data ("index")
+09/15/2021 08:13:29 AM - INFO: [no key 0.00036s] ()
+09/15/2021 08:13:29 AM - INFO: COMMIT
+09/15/2021 08:13:29 AM - INFO: BEGIN (implicit)
+09/15/2021 08:13:29 AM - INFO: INSERT INTO all_data ("index", object_names, object_type, object_id, device_id) VALUES (?, ?, ?, ?, ?)
+09/15/2021 08:13:29 AM - INFO: [generated in 0.00043s] (0, 'BAC0', 'device', 3057061, 3057061)
+09/15/2021 08:13:29 AM - INFO: COMMIT
+09/15/2021 08:13:29 AM - DEBUG: fini
