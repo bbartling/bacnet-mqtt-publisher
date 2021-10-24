@@ -3,18 +3,16 @@ from contextlib import AsyncExitStack, asynccontextmanager
 from random import randrange
 from asyncio_mqtt import Client, MqttError
 
-from bacnet_operations import BacNetWorker
+from bacnet_actions import BacNetWorker
+import configs
 
 
+data_to_get = configs.devices
+broker_url = configs.login_info["broker_url"]
+username = configs.login_info["username"]
+password = configs.login_info["password"]
 
 
-def get_config_info():
-    with open("config.key", "r") as file:
-        info = json.load(file)
-        login = info["login_info"]
-        devices = info["devices"]
-    return login,devices
-    
 
 async def advanced_example():
     # context managers create a stack to help manage them
@@ -26,9 +24,9 @@ async def advanced_example():
         stack.push_async_callback(cancel_tasks, tasks)
 
         # Connect to the MQTT broker
-        client = Client("23.92.28.66",
-                username="ben",
-                password="CH@rmany431!")
+        client = Client(broker_url,
+                username=username,
+                password=password)
         await stack.enter_async_context(client)
 
         # topic filters
@@ -127,10 +125,5 @@ async def main():
             await asyncio.sleep(reconnect_interval)
 
 
-login,devices = get_config_info()
-print("login ",login)
-print("devices ",devices)
-
 
 asyncio.run(main())
-
