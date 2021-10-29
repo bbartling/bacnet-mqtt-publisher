@@ -11,7 +11,8 @@ data_to_get = configs.devices
 broker_url = configs.login_info["broker_url"]
 username = configs.login_info["username"]
 password = configs.login_info["password"]
-
+site_id = configs.site_id
+poll_frequency = configs.poll_frequency
 
 
 async def advanced_example():
@@ -31,9 +32,9 @@ async def advanced_example():
 
         # topic filters
         topic_filters = (
-            "sensor/telemetry/hvac/temps",
-            "sensor/telemetry/hvac/temps/setpoints",
-            "sensor/telemetry/eletrical/main/power"
+            f"sensor/telemetry/hvac/{site_id}",
+            f"sensor/telemetry/eletrical/{site_id}",
+            f"bacnet/write/{site_id}"
         )
         for topic_filter in topic_filters:
         
@@ -52,13 +53,13 @@ async def advanced_example():
 
         # Subscribe to topic(s)
         # subscribe *after* starting the message
-        await client.subscribe("write/setpoint/#")
+        await client.subscribe(f"bacnet/write/{site_id}")
 
         # Publish a random value to each of these topics
         topics = (
-            "sensor/telemetry/hvac/temps",
-            "sensor/telemetry/hvac/temps/setpoints",
-            "sensor/telemetry/eletrical/main/power"
+            f"sensor/telemetry/hvac/{site_id}",
+            f"sensor/telemetry/eletrical/{site_id}",
+            f"bacnet/write/{site_id}"
         )
         task = asyncio.create_task(post_to_topics(client, topics))
         tasks.add(task)
@@ -71,14 +72,14 @@ async def post_to_topics(client, topics):
     while True:
         for topic in topics:
         
-            if topic == "sensor/telemetry/hvac/temps":
+            if topic == f"sensor/telemetry/hvac/{site_id}":
             
                 device_mapping = {}
                 
                 for info,devices in data_to_get.items():
                     for device,attributes in devices.items():
                     
-                        read_result = await BacNetWorker.bacnet_ops(
+                        read_result = await BacNetWorker.do_things(
                         "read",
                         attributes['address'],
                         attributes['object_type'],
@@ -92,15 +93,18 @@ async def post_to_topics(client, topics):
                 await client.publish(topic, json.dumps(device_mapping), qos=1)
             else:
                 print(f'PASSING TOPIC on {topic} to PUBLISH/post')
-            await asyncio.sleep(60)
+            await asyncio.sleep(poll_frequency/len(topics)) # [seconds]
 
-async def log_messages(messages, template):    
+
+async def log_messages(messages, template):
     async for message in messages:
-        # 🤔 Note that we assume that the message paylod is an
-        # UTF8-encoded string (hence the `bytes.decode` call).
-        print("FUNCTION HIT def log_messages!")
-        print("TEMPLATES TO DECODE")
-        print(template.format(message.payload.decode()))
+        payload_ = template.format(message.payload.decode())
+        print("log_messages def hit ",payload_)
+        if message.payload.decode() == "Testing123":
+            print("YES payload_ == Testing123, DO SOMETHING")
+        else:
+            print("payload_ not == Testing123")
+
 
 async def cancel_tasks(tasks):
     for task in tasks:
@@ -115,7 +119,7 @@ async def cancel_tasks(tasks):
 async def main():
     # Run the advanced_example indefinitely. Reconnect automatically
     # if the connection is lost.
-    reconnect_interval = 10  # [seconds]
+    reconnect_interval = 30  # [seconds]
     while True:
         try:
             await advanced_example()

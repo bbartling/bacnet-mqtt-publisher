@@ -1,6 +1,8 @@
 import BAC0, time, random
 
 
+bacnet = BAC0.lite()
+'''
 data_to_get = {'devices': {
    'boiler_temp': {'address': '12345:2',
    'object_type': 'analogInput',
@@ -18,7 +20,6 @@ data_to_get = {'devices': {
    'object_type': 'binaryOutput',
    'object_instance': '1'}}}
 
-bacnet = BAC0.lite()
 
 
 
@@ -38,6 +39,21 @@ for info,devices in data_to_get.items():
         print("check type",type(check))
 
 '''
+import BAC0, time, random
+
+
+
+
+address = '12345:2'
+object_type = 'binaryOutput'
+object_instance = '1'
+value = 'inactive'
+
+
+read_vals = f'{address} {object_type} {object_instance} presentValue'
+check = bacnet.read(read_vals)
+print("check ",check)
+
 write_vals = f'{address} {object_type} {object_instance} presentValue {value}'
 print("Excecuting write_vals statement:", write_vals)
 
@@ -46,8 +62,6 @@ write_result = bacnet.write(write_vals)
 read_vals = f'{address} {object_type} {object_instance} presentValue'
 check = bacnet.read(read_vals)
 print("check ",check)
-'''
-
 
 bacnet.disconnect()
 print('BACnet disconnected')
