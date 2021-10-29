@@ -7,12 +7,14 @@ from bacnet_actions import BacNetWorker
 import configs
 
 
-data_to_get = configs.devices
+
 broker_url = configs.login_info["broker_url"]
 username = configs.login_info["username"]
 password = configs.login_info["password"]
 site_id = configs.site_id
 poll_frequency = configs.poll_frequency
+zone_temps = configs.zone_temps
+zone_setpoints = configs.zone_setpoints
 
 
 async def advanced_example():
@@ -32,7 +34,11 @@ async def advanced_example():
 
         # topic filters
         topic_filters = (
-            f"sensor/telemetry/hvac/{site_id}",
+            f"sensor/telemetry/hvac/{site_id}/zone/temp",
+            f"sensor/telemetry/hvac/{site_id}/zone/temp/setpoint",
+            f"sensor/telemetry/hvac/{site_id}/vav/reheat/valve",
+            f"sensor/telemetry/hvac/{site_id}/vav/reheat/temp",
+            f"sensor/telemetry/hvac/{site_id}/vav/damper",
             f"sensor/telemetry/eletrical/{site_id}",
             f"bacnet/write/{site_id}"
         )
@@ -57,9 +63,12 @@ async def advanced_example():
 
         # Publish a random value to each of these topics
         topics = (
-            f"sensor/telemetry/hvac/{site_id}",
+            f"sensor/telemetry/hvac/{site_id}/zone/temp",
+            f"sensor/telemetry/hvac/{site_id}/zone/temp/setpoint",
+            f"sensor/telemetry/hvac/{site_id}/vav/reheat/valve",
+            f"sensor/telemetry/hvac/{site_id}/vav/reheat/temp",
+            f"sensor/telemetry/hvac/{site_id}/vav/damper",
             f"sensor/telemetry/eletrical/{site_id}",
-            f"bacnet/write/{site_id}"
         )
         task = asyncio.create_task(post_to_topics(client, topics))
         tasks.add(task)
@@ -72,11 +81,9 @@ async def post_to_topics(client, topics):
     while True:
         for topic in topics:
         
-            if topic == f"sensor/telemetry/hvac/{site_id}":
-            
-                device_mapping = {}
-                
-                for info,devices in data_to_get.items():
+            # PUBLISH ZONE TEMPS TO BUS
+            if topic == f"sensor/telemetry/hvac/{site_id}/zone/temp":
+                for info,devices in zone_temps.items():
                     for device,attributes in devices.items():
                     
                         read_result = await BacNetWorker.do_things(
@@ -86,15 +93,31 @@ async def post_to_topics(client, topics):
                         attributes['object_instance']
                         )
                         
-                        device_mapping[device] = {'pv':read_result}
-                        
-                print(device_mapping)
-                
-                await client.publish(topic, json.dumps(device_mapping), qos=1)
+                        topic_to_pub = topic + "/" + str(read_result)
+                        print(topic_to_pub)
+                        await client.publish(topic, json.dumps(topic_to_pub), qos=1)
             else:
                 print(f'PASSING TOPIC on {topic} to PUBLISH/post')
-            await asyncio.sleep(poll_frequency/len(topics)) # [seconds]
+            await asyncio.sleep(poll_frequency) # [seconds]
 
+            # PUBLISH ZONE SETPOINTS TO BUS
+            if topic == f"sensor/telemetry/hvac/{site_id}/zone/setpoint":
+                for info,devices in zone_setpoints.items():
+                    for device,attributes in devices.items():
+                    
+                        read_result = await BacNetWorker.do_things(
+                        "read",
+                        attributes['address'],
+                        attributes['object_type'],
+                        attributes['object_instance']
+                        )
+                        
+                        topic_to_pub = topic + "/" + str(read_result)
+                        print(topic_to_pub)
+                        await client.publish(topic, json.dumps(topic_to_pub), qos=1)
+            else:
+                print(f'PASSING TOPIC on {topic} to PUBLISH/post')
+            await asyncio.sleep(poll_frequency) # [seconds]
 
 async def log_messages(messages, template):
     async for message in messages:
