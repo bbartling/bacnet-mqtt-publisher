@@ -1,4 +1,4 @@
-import asyncio, json, BAC0
+import asyncio, json, BAC0, time
 from contextlib import AsyncExitStack, asynccontextmanager
 from random import randrange
 from asyncio_mqtt import Client, MqttError
@@ -15,6 +15,7 @@ site_id = configs.site_id
 poll_frequency = configs.poll_frequency
 zone_temps = configs.zone_temps
 zone_setpoints = configs.zone_setpoints
+
 
 
 async def advanced_example():
@@ -83,6 +84,8 @@ async def post_to_topics(client, topics):
         
             # PUBLISH ZONE TEMPS TO BUS
             if topic == f"sensor/telemetry/hvac/{site_id}/zone/temp":
+                device_maping = f"SITEID={site_id};"
+                
                 for info,devices in zone_temps.items():
                     for device,attributes in devices.items():
                     
@@ -93,16 +96,21 @@ async def post_to_topics(client, topics):
                         attributes['object_instance']
                         )
                         
-                        topic_to_pub = topic + "/" + str(read_result)
+                        topic_to_pub = device + "=" + str(round(read_result,2)) + ";"
                         print(topic_to_pub)
-                        await client.publish(topic, json.dumps(topic_to_pub), qos=1)
+                        
+                        device_maping = device_maping + topic_to_pub
+                
+                print(f"[{time.ctime()}] PUBLISHING {topic} with {device_maping}")
             else:
                 print(f'PASSING TOPIC on {topic} to PUBLISH/post')
             await asyncio.sleep(poll_frequency) # [seconds]
 
             # PUBLISH ZONE SETPOINTS TO BUS
             if topic == f"sensor/telemetry/hvac/{site_id}/zone/setpoint":
-                for info,devices in zone_setpoints.items():
+                device_maping = f"SITEID={site_id};"
+                
+                for info,devices in zone_temps.items():
                     for device,attributes in devices.items():
                     
                         read_result = await BacNetWorker.do_things(
@@ -112,9 +120,13 @@ async def post_to_topics(client, topics):
                         attributes['object_instance']
                         )
                         
-                        topic_to_pub = topic + "/" + str(read_result)
+                        topic_to_pub = device + "=" + str(round(read_result,2)) + ";"
                         print(topic_to_pub)
-                        await client.publish(topic, json.dumps(topic_to_pub), qos=1)
+                        
+                        device_maping = device_maping + topic_to_pub
+                
+                print(f"[{time.ctime()}] PUBLISHING {topic} with {device_maping}")
+                await client.publish(topic, json.dumps(device_maping), qos=1)
             else:
                 print(f'PASSING TOPIC on {topic} to PUBLISH/post')
             await asyncio.sleep(poll_frequency) # [seconds]
