@@ -8,13 +8,13 @@ port = 1883
 
 
 # generate client ID with pub prefix randomly
-client_id = "bartlino_1"
-topic_to_publish = f"bartlino/testing/{client_id}"
-topic_to_listen = f"bartlino/testing/bartlino_2"
-topic_to_wildcard = f"bartlino/testing/*"
+client_id = "test_1"
+topic_to_publish = f"laptop/publish"
+topic_to_listen = f"mobile/publish"
+topic_to_wildcard = f"testing/*"
 
-username = "emqx"
-password = "public"
+username = ""
+password = ""
 
 
 def connect_mqtt():
@@ -34,32 +34,30 @@ def connect_mqtt():
     return client
 
 
-def publish(client):
-    msg_count = 0
-    while True:
-        time.sleep(20)
-        msg = f"hello from {client_id}: {msg_count}"
-        result = client.publish(topic_to_publish, msg)
-        
-        # result: [0, 1]
-        status = result[0]
-        if status == 0:
-            print(f"Send {msg} to topic {topic_to_publish}")
-        else:
-            print(f"Failed to send message to topic {topic_to_publish}")
-        msg_count += 1
+def publish(client,msg):
+
+    result = client.publish(topic_to_publish, msg)
+    
+    # result: [0, 1]
+    status = result[0]
+    if status == 0:
+        print(f"Send {msg} to topic {topic_to_publish}")
+    else:
+        print(f"Failed to send message to topic {topic_to_publish}")
 
 
 
-def on_message(client, userdata, msg):  # The callback for when a PUBLISH message is received from the server.
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):  
     print("Message received-> " + msg.topic + " " + str(msg.payload))
-
-
+    
+    if str(msg.payload) == "zone temps":
+        publish(client,"avg=72.1;min=66.4;max=78.8")
+        
 
 def run():
     client = connect_mqtt()
     client.loop_start()
-    publish(client)
 
 
 if __name__ == '__main__':

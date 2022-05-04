@@ -8,13 +8,13 @@ port = 1883
 
 
 # generate client ID with pub prefix randomly
-client_id = "bartlino_2"
-topic_to_publish = f"bartlino/testing/{client_id}"
-topic_to_listen = f"bartlino/testing/bartlino_1"
-topic_to_wildcard = f"bartlino/testing/*"
+client_id = "test_1"
+topic_to_publish = f"laptop/publish"
+topic_to_listen = f"mobile/publish"
+topic_to_wildcard = f"testing/*"
 
-username = "emqx"
-password = "public"
+username = ""
+password = ""
 
 
 def connect_mqtt():
